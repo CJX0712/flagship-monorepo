@@ -7,3 +7,6 @@
 [submodule "flagship-rag-engine"]
 	path = flagship-rag-engine
 	url = https://github.com/CJX0712/flagship-rag-engine.git
+[submodule "flagship-llm-chat"]
+	path = flagship-llm-chat
+	url = https://github.com/CJX0712/flagship-llm-chat.git

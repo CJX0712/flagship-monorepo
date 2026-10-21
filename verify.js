@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 旗舰 AI 锻造闭环 · 一键聚合自检
- * 通过 git submodule 引用三件实物，依次运行各自的自检并汇总战绩。
+ * 通过 git submodule 引用四件实物，依次运行各自的自检并汇总战绩。
  * 用法：node verify.js
  */
 const { execFileSync } = require('child_process');
@@ -9,10 +9,12 @@ const path = require('path');
 
 const nodeBin = process.execPath; // 使用当前运行的同一 node
 
+// 输出风格兼容：前三者用 ✅/❌；llm-chat 的对话层自检用 PASS/FAIL
 const REPOS = [
-  { name: 'flagship-algo-forge',  label: '算法工具库',   file: 'flagship-algo-forge/apex-forge.js' },
-  { name: 'flagship-transformer', label: 'Transformer 参考实现 + 基准', file: 'flagship-transformer/apex-transformer.js' },
-  { name: 'flagship-rag-engine',  label: '推理引擎 + RAG', file: 'flagship-rag-engine/apex-engine.js' },
+  { name: 'flagship-algo-forge',  label: '算法工具库',          file: 'flagship-algo-forge/apex-forge.js' },
+  { name: 'flagship-transformer', label: 'Transformer 参考实现+基准', file: 'flagship-transformer/apex-transformer.js' },
+  { name: 'flagship-rag-engine',  label: '推理引擎+RAG',        file: 'flagship-rag-engine/apex-engine.js' },
+  { name: 'flagship-llm-chat',    label: '可对话迷你 LLM 服务',  file: 'flagship-llm-chat/apex-chat.js' },
 ];
 
 let allPass = true;
@@ -29,14 +31,14 @@ for (const r of REPOS) {
     code = e.status || 1;
     out = (e.stdout || '') + '\n' + (e.stderr || '');
   }
-  const passCount = (out.match(/✅/g) || []).length;
-  const failCount = (out.match(/❌/g) || []).length;
+  const passCount = (out.match(/✅/g) || []).length + (out.match(/PASS /g) || []).length;
+  const failCount = (out.match(/❌/g) || []).length + (out.match(/FAIL /g) || []).length;
   const ok = code === 0 && failCount === 0;
   if (!ok) allPass = false;
   summary.push({ ...r, passCount, failCount, ok });
   console.log(ok ? `[PASS] ${passCount}/${passCount + failCount} 全绿` : `[FAIL] ${passCount} 通过 / ${failCount} 失败`);
   out.split('\n')
-    .filter((l) => l.includes('✅') || l.includes('❌') || l.includes('结果'))
+    .filter((l) => l.includes('✅') || l.includes('❌') || l.includes('PASS ') || l.includes('FAIL ') || l.includes('结果') || l.includes('全绿'))
     .forEach((l) => console.log('   ' + l.trim()));
 }
 
@@ -45,5 +47,5 @@ summary.forEach((s) =>
   console.log(`${s.ok ? '[PASS]' : '[FAIL]'} ${s.name.padEnd(24)} ${s.label.padEnd(26)} ${s.passCount}/${s.passCount + s.failCount}`)
 );
 console.log('==============================================');
-console.log(allPass ? '\n[PASS] 三件实物全部自检通过 · 闭环可复现 · 作者：晨星' : '\n[FAIL] 存在未通过项，请检查上方明细');
+console.log(allPass ? '\n[PASS] 四件实物全部自检通过 · 闭环可复现 · 作者：晨星' : '\n[FAIL] 存在未通过项，请检查上方明细');
 process.exit(allPass ? 0 : 1);

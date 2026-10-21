@@ -92,7 +92,7 @@
     <svg id="loop" viewBox="0 0 720 430" role="img" aria-label="锻造闭环流程图"></svg>
   </div>
 
-  <h2>三、三件实物（各自开源 · 自检全绿）</h2>
+  <h2>三、四件实物（各自开源 · 自检全绿）</h2>
   <div class="grid cols3">
     <div class="artifact">
       <div class="num">实物 01</div>
@@ -115,6 +115,13 @@
       <a href="https://github.com/CJX0712/flagship-rag-engine" target="_blank" rel="noopener">查看仓库 →</a>
       <span class="score ok">9 / 9 全绿</span>
     </div>
+    <div class="artifact">
+      <div class="num">实物 04</div>
+      <h3>flagship-llm-chat</h3>
+      <p>可对话迷你 LLM 服务层。复用前两块地基（KV-Cache 解码 / 因果 LM 训练），新增权重持久化、重复惩罚、句末符截断，把"能跑的引擎"变成"真能对话的系统"。</p>
+      <a href="https://github.com/CJX0712/flagship-llm-chat" target="_blank" rel="noopener">查看仓库 →</a>
+      <span class="score ok">12 / 12 全绿</span>
+    </div>
   </div>
 
   <h2>四、闭环总战绩</h2>
@@ -124,6 +131,7 @@
       <tr><td>flagship-algo-forge</td><td>算法工具库</td><td><span class="dot ok"></span>8/8 全绿</td><td>梯度检验 maxRelErr≈1e-10；softmax 平移不变</td></tr>
       <tr><td>flagship-transformer</td><td>Transformer 参考实现</td><td><span class="dot ok"></span>9/9 全绿</td><td>归纳 acc 1.00 vs 基线 0.20；RoPE 梯度 8e-12；YaRN 外推 0.19→0.52</td></tr>
       <tr><td>flagship-rag-engine</td><td>推理引擎 + RAG</td><td><span class="dot ok"></span>9/9 全绿</td><td>KV-Cache ≡ 全量重算（偏差 0.00）；BM25 Recall@1=1.00</td></tr>
+      <tr><td>flagship-llm-chat</td><td>可对话迷你 LLM 服务</td><td><span class="dot ok"></span>12/12 全绿</td><td>权重 save/load 往返一致；对话连通；句末符截断；RoPE→旋转位置编码</td></tr>
     </tbody>
   </table>
 
@@ -135,14 +143,15 @@
       <li><b>YaRN 只在模型训够时生效：</b>欠训练（4000 步）仅小幅改善，需 ~6000 步才出现大幅外推增益。</li>
       <li><b>玩具规模：</b>三件实物验证的是架构归纳偏置 / 引擎正确性 / 检索质量，搭载玩具级小模型，不宣称真实 LLM 规模 SOTA。</li>
       <li><b>KV-Cache 历史 bug：</b>早期注意力用 <code>seq=Q.shape[0]</code> 驱动 K/V 切片，KV-Cache 下只取了第一个缓存 key（偏差 4.19），拆成 qLen/kvLen 后逐位等价（0.00）。</li>
+      <li><b>对话多轮依赖长度泛化：</b>flagship-llm-chat 多轮把历史拼进上下文，继承 transformer 的长度外推短板，超长多轮会退化（已做前缀截断兜底）。</li>
     </ul>
   </div>
 
   <h2>六、一键验证闭环</h2>
   <div class="card">
     <p style="color:var(--text);font-size:14px;">本仓库通过 git submodule 引用三件实物，可一键聚合跑通全部自检：</p>
-    <p><code>git clone --recurse-submodules https://github.com/CJX0712/flagship-ai.git</code></p>
-    <p><code>cd flagship-ai &amp;&amp; node verify.js</code></p>
+    <p><code>git clone --recurse-submodules https://github.com/CJX0712/flagship-monorepo.git</code></p>
+    <p><code>cd flagship-monorepo &amp;&amp; node verify.js</code></p>
     <p style="color:var(--muted);">预期：三件实物全部自检通过（8/8 + 9/9 + 9/9），闭环可复现。</p>
   </div>
 

@@ -3,19 +3,20 @@
 > **站在世界顶级成果之上 · 零重写 · 集大成 · 有尺子 · 闭环开源**
 > 作者：**晨星** · GitHub: [CJX0712](https://github.com/CJX0712)
 
-一句话：**这不是一个 AI，是一套"锻造世界顶级 AI"的闭环方法论 + 三件能跑、能复现、能验证的真实物。**
+一句话：**这不是一个 AI，是一套"锻造世界顶级 AI"的闭环方法论 + 四件能跑、能复现、能验证的真实物。**
 
 每一行代码都站在世界顶级成果肩上（绝不从零造轮子）；每一个模块都有一把独立的**尺子**（数学不变量 / 有对手的基准），能主动暴露短板而非自说自话；最终完整开源、可复现、署名。
 
 ---
 
-## 一、三件实物（已分别开源、各自自检全绿）
+## 一、四件实物（已分别开源、各自自检全绿）
 
 | # | 仓库 | 自检战绩 | 它证明了什么 |
 |---|------|---------|------------|
 | 1 | [flagship-algo-forge](https://github.com/CJX0712/flagship-algo-forge) | **8/8** | 零依赖复用世界顶级基础算法（注意力/LayerNorm/AdamW/Xavier/Top-p），每条都是可被独立实现交叉验证的数学不变量 |
 | 2 | [flagship-transformer](https://github.com/CJX0712/flagship-transformer) | **9/9** | 从零搭的反向自动微分 + 十层架构 Transformer 参考实现；**RoPE** 位置编码；**归纳任务上注意力碾压无注意力基线**；诚实记录**长度外推短板**并用 **YaRN** 补洞 |
 | 3 | [flagship-rag-engine](https://github.com/CJX0712/flagship-rag-engine) | **9/9** | 工业级 **KV-Cache 增量解码引擎**（与全量重算**逐位等价**）+ **BM25 检索器** + 端到端 **RAG 管线** |
+| 4 | [flagship-llm-chat](https://github.com/CJX0712/flagship-llm-chat) | **12/12** | 可对话迷你 LLM 服务层：复用 KV-Cache/因果 LM，新增权重持久化 + 重复惩罚 + 句末符截断，把"能跑的引擎"变成"真能对话的系统" |
 
 ---
 
@@ -68,12 +69,12 @@
 本仓库通过 **git submodule** 引用三件实物，可一键聚合跑通全部自检：
 
 ```bash
-git clone --recurse-submodules https://github.com/CJX0712/flagship-ai.git
-cd flagship-ai
+git clone --recurse-submodules https://github.com/CJX0712/flagship-monorepo.git
+cd flagship-monorepo
 node verify.js
 ```
 
-预期输出：`🏆 三件实物全部自检通过 · 闭环可复现`（algo 8/8 + transformer 9/9 + rag 9/9）。
+预期输出：`🏆 四件实物全部自检通过 · 闭环可复现`（algo 8/8 + transformer 9/9 + rag 9/9 + chat 12/12 聚合，退出码 0）。
 
 > 若不递归克隆，也可手动进入各子仓库目录运行其自检脚本。
 
@@ -83,7 +84,8 @@ node verify.js
 
 1. **长度外推仍被"缓解"而非"消灭"**：YaRN 把 L=30 外推从 0.19 拉到 0.52，但距同分布 L=20 的 0.89 仍有明显差距。
 2. **YaRN 只在模型训够时生效**：欠训练（4000 步）时它仅小幅改善；需 ~6000 步才出现大幅外推增益。
-3. **玩具规模**：三件实物验证的是"架构归纳偏置 / 引擎正确性 / 检索质量"，搭载的是玩具级小模型，**不宣称**在真实 LLM 规模达到 SOTA。
+3. **玩具规模**：四件实物验证的是"架构归纳偏置 / 引擎正确性 / 检索质量 / 对话服务链路"，搭载的是玩具级小模型，**不宣称**在真实 LLM 规模达到 SOTA。
+4. **对话多轮依赖长度泛化**：flagship-llm-chat 多轮把历史拼进上下文，继承 transformer 的长度外推短板；超长多轮会退化（已做前缀截断兜底）。
 
 ---
 
