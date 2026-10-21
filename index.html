@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>旗舰 AI 锻造闭环 · APEX FLAGSHIP</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #ffffff; --text: #1f2328; --muted: #5b6472;
+    --primary: #1a73e8; --accent: #b8860b; --ok: #1a7f37; --bad: #c5221f;
+    --border: #e3e6ea; --chip: #eef3fb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
+  header.hero {
+    background: linear-gradient(135deg, #1a3a6b, #1a73e8);
+    color: #fff; border-radius: 16px; padding: 34px 32px; margin-bottom: 28px;
+    box-shadow: 0 6px 24px rgba(26,115,232,.18);
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 30px; letter-spacing: .5px; }
+  header.hero .sub { opacity: .92; font-size: 15px; }
+  header.hero .badge {
+    display: inline-block; margin-top: 14px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(255,255,255,.18); font-size: 13px; backdrop-filter: blur(4px);
+  }
+  h2 { font-size: 21px; margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid var(--primary); }
+  .grid { display: grid; gap: 16px; }
+  .grid.cols4 { grid-template-columns: repeat(4, 1fr); }
+  .grid.cols3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 860px) { .grid.cols4, .grid.cols3 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px; box-shadow: 0 2px 8px rgba(20,30,50,.05);
+  }
+  .card h3 { margin: 0 0 6px; font-size: 16px; color: var(--primary); }
+  .card p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); }
+  .phil .tag { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: .5px; }
+  .loopwrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+  .loopwrap svg { width: 100%; max-width: 720px; height: auto; }
+  .node-circle { fill: var(--primary); }
+  .node-text { fill: #fff; font-size: 12px; font-weight: 600; }
+  .edge { stroke: #9ab4dc; stroke-width: 2; fill: none; }
+  .center-label { fill: var(--text); font-size: 14px; font-weight: 700; }
+  .artifact {
+    border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: var(--card);
+    box-shadow: 0 2px 8px rgba(20,30,50,.05); display: flex; flex-direction: column;
+  }
+  .artifact .num { font-size: 13px; color: var(--accent); font-weight: 700; }
+  .artifact h3 { margin: 4px 0 8px; font-size: 16px; }
+  .artifact p { margin: 0 0 10px; font-size: 13px; color: var(--muted); flex: 1; }
+  .artifact a { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 13.5px; }
+  .artifact a:hover { text-decoration: underline; }
+  .score { display: inline-block; margin-top: 10px; padding: 4px 10px; border-radius: 6px; font-size: 12.5px; font-weight: 700; }
+  .score.ok { background: #e7f4ea; color: var(--ok); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+  th { background: var(--chip); color: var(--text); font-weight: 700; }
+  td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; }
+  .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); }
+  .warn { background: #fdf3f2; border: 1px solid #f3c9c5; border-radius: 12px; padding: 18px; }
+  .warn h3 { margin: 0 0 10px; color: var(--bad); font-size: 16px; }
+  .warn ul { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--muted); }
+  .warn li { margin: 6px 0; }
+  footer { margin-top: 40px; text-align: center; font-size: 13px; color: var(--muted); }
+  code { background: var(--chip); padding: 2px 6px; border-radius: 5px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>旗舰 AI 锻造闭环 · APEX FLAGSHIP</h1>
+    <div class="sub">站在世界顶级成果之上 · 零重写 · 集大成 · 有尺子 · 闭环开源</div>
+    <div class="badge">作者：晨星 · GitHub: CJX0712 · MIT License</div>
+  </header>
+
+  <h2>一、旗舰哲学</h2>
+  <div class="grid cols4 phil">
+    <div class="card"><div class="tag">零重写</div><h3>不造轮子</h3><p>任何需求先检索世界顶级算法/代码/项目，直接复用、组合、超越。</p></div>
+    <div class="card"><div class="tag">集大成</div><h3>站在肩上</h3><p>每行代码、每个模块都立于世界顶级成果；有更强现成方案立即替换自写。</p></div>
+    <div class="card"><div class="tag">有尺子</div><h3>独立打分</h3><p>每条自检是可交叉验证的数学不变量；每个基准都有真实对手，能主动暴露短板。</p></div>
+    <div class="card"><div class="tag">闭环交付</div><h3>开源署名</h3><p>完整开源至 GitHub，可运行、可复现、可验证，署名晨星。</p></div>
+  </div>
+
+  <h2>二、锻造闭环工作流</h2>
+  <div class="loopwrap">
+    <svg id="loop" viewBox="0 0 720 430" role="img" aria-label="锻造闭环流程图"></svg>
+  </div>
+
+  <h2>三、三件实物（各自开源 · 自检全绿）</h2>
+  <div class="grid cols3">
+    <div class="artifact">
+      <div class="num">实物 01</div>
+      <h3>flagship-algo-forge</h3>
+      <p>零依赖算法工具库。复用 Vaswani 注意力 / LayerNorm / AdamW / Xavier / Top-p，每条都标论文出处，每条自检都是可被独立实现交叉验证的数学不变量。</p>
+      <a href="https://github.com/CJX0712/flagship-algo-forge" target="_blank" rel="noopener">查看仓库 →</a>
+      <span class="score ok">8 / 8 全绿</span>
+    </div>
+    <div class="artifact">
+      <div class="num">实物 02</div>
+      <h3>flagship-transformer</h3>
+      <p>反向自动微分引擎 + 十层架构 Transformer 参考实现。RoPE 位置编码；归纳任务上注意力碾压无注意力基线；诚实记录长度外推短板并用 YaRN 补洞。</p>
+      <a href="https://github.com/CJX0712/flagship-transformer" target="_blank" rel="noopener">查看仓库 →</a>
+      <span class="score ok">9 / 9 全绿</span>
+    </div>
+    <div class="artifact">
+      <div class="num">实物 03</div>
+      <h3>flagship-rag-engine</h3>
+      <p>工业级 KV-Cache 增量解码引擎（与全量重算逐位等价）+ BM25 检索器 + 端到端 RAG 管线。修复了底层注意力只取首个缓存 key 的真实 bug。</p>
+      <a href="https://github.com/CJX0712/flagship-rag-engine" target="_blank" rel="noopener">查看仓库 →</a>
+      <span class="score ok">9 / 9 全绿</span>
+    </div>
+  </div>
+
+  <h2>四、闭环总战绩</h2>
+  <table>
+    <thead><tr><th>仓库</th><th>实物</th><th>自检</th><th>关键证据</th></tr></thead>
+    <tbody>
+      <tr><td>flagship-algo-forge</td><td>算法工具库</td><td><span class="dot ok"></span>8/8 全绿</td><td>梯度检验 maxRelErr≈1e-10；softmax 平移不变</td></tr>
+      <tr><td>flagship-transformer</td><td>Transformer 参考实现</td><td><span class="dot ok"></span>9/9 全绿</td><td>归纳 acc 1.00 vs 基线 0.20；RoPE 梯度 8e-12；YaRN 外推 0.19→0.52</td></tr>
+      <tr><td>flagship-rag-engine</td><td>推理引擎 + RAG</td><td><span class="dot ok"></span>9/9 全绿</td><td>KV-Cache ≡ 全量重算（偏差 0.00）；BM25 Recall@1=1.00</td></tr>
+    </tbody>
+  </table>
+
+  <h2>五、已知短板（如实保留，不藏）</h2>
+  <div class="warn">
+    <h3>尺子照出的洞，而不是勋章</h3>
+    <ul>
+      <li><b>长度外推被缓解而非消灭：</b>YaRN 把 L=30 外推从 0.19 拉到 0.52，但距同分布 L=20 的 0.89 仍有明显差距。</li>
+      <li><b>YaRN 只在模型训够时生效：</b>欠训练（4000 步）仅小幅改善，需 ~6000 步才出现大幅外推增益。</li>
+      <li><b>玩具规模：</b>三件实物验证的是架构归纳偏置 / 引擎正确性 / 检索质量，搭载玩具级小模型，不宣称真实 LLM 规模 SOTA。</li>
+      <li><b>KV-Cache 历史 bug：</b>早期注意力用 <code>seq=Q.shape[0]</code> 驱动 K/V 切片，KV-Cache 下只取了第一个缓存 key（偏差 4.19），拆成 qLen/kvLen 后逐位等价（0.00）。</li>
+    </ul>
+  </div>
+
+  <h2>六、一键验证闭环</h2>
+  <div class="card">
+    <p style="color:var(--text);font-size:14px;">本仓库通过 git submodule 引用三件实物，可一键聚合跑通全部自检：</p>
+    <p><code>git clone --recurse-submodules https://github.com/CJX0712/flagship-ai.git</code></p>
+    <p><code>cd flagship-ai &amp;&amp; node verify.js</code></p>
+    <p style="color:var(--muted);">预期：三件实物全部自检通过（8/8 + 9/9 + 9/9），闭环可复现。</p>
+  </div>
+
+  <footer>
+    旗舰 AI 锻造闭环 · 作者 晨星 (CJX0712) · MIT License<br/>
+    零重写 · 集大成 · 有尺子 · 闭环开源
+  </footer>
+
+</div>
+
+<script>
+  // 绘制 7 节点锻造闭环（SVG）
+  (function () {
+    var svg = document.getElementById('loop');
+    if (!svg) return;
+    var cx = 360, cy = 215, R = 150;
+    var nodes = [
+      '需求', '检索世界顶级成果', '复用·组合·超越', '数学不变量自检',
+      '有对手的基准打分', '诚实记录短板', '闭环开源·署名'
+    ];
+    var n = nodes.length;
+    var NS = 'http://www.w3.org/2000/svg';
+    var pos = [];
+    for (var i = 0; i < n; i++) {
+      var ang = (Math.PI * 2 * i) / n - Math.PI / 2;
+      pos.push({ x: cx + R * Math.cos(ang), y: cy + R * Math.sin(ang) });
+    }
+    // 边：i -> i+1 (最后回到 0)
+    for (var k = 0; k < n; k++) {
+      var a = pos[k], b = pos[(k + 1) % n];
+      var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy);
+      var ux = dx / len, uy = dy / len, pad = 26;
+      var x1 = a.x + ux * pad, y1 = a.y + uy * pad, x2 = b.x - ux * pad, y2 = b.y - uy * pad;
+      var path = document.createElementNS(NS, 'path');
+      path.setAttribute('class', 'edge');
+      path.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2);
+      svg.appendChild(path);
+      // 箭头
+      var ah = document.createElementNS(NS, 'path');
+      ah.setAttribute('fill', '#9ab4dc');
+      var ax = x2, ay = y2, aa = Math.atan2(uy, ux);
+      var s = 9;
+      ah.setAttribute('d', 'M ' + ax + ' ' + ay +
+        ' L ' + (ax - s * Math.cos(aa - 0.4)) + ' ' + (ay - s * Math.sin(aa - 0.4)) +
+        ' L ' + (ax - s * Math.cos(aa + 0.4)) + ' ' + (ay - s * Math.sin(aa + 0.4)) + ' Z');
+      svg.appendChild(ah);
+    }
+    // 节点
+    for (var j = 0; j < n; j++) {
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('class', 'node-circle');
+      c.setAttribute('cx', pos[j].x); c.setAttribute('cy', pos[j].y); c.setAttribute('r', 24);
+      svg.appendChild(c);
+      var t = document.createElementNS(NS, 'text');
+      t.setAttribute('class', 'node-text');
+      t.setAttribute('x', pos[j].x); t.setAttribute('y', pos[j].y - 30);
+      t.setAttribute('text-anchor', 'middle');
+      t.textContent = (j + 1);
+      svg.appendChild(t);
+      var lab = document.createElementNS(NS, 'text');
+      lab.setAttribute('x', pos[j].x); lab.setAttribute('y', pos[j].y + 4);
+      lab.setAttribute('text-anchor', 'middle');
+      lab.setAttribute('fill', '#fff'); lab.setAttribute('font-size', '10.5');
+      lab.setAttribute('font-weight', '700');
+      lab.textContent = nodes[j].length > 6 ? nodes[j].slice(0, 6) : nodes[j];
+      svg.appendChild(lab);
+      // 圆下方完整标签
+      var full = document.createElementNS(NS, 'text');
+      full.setAttribute('x', pos[j].x); full.setAttribute('y', pos[j].y + 44);
+      full.setAttribute('text-anchor', 'middle');
+      full.setAttribute('fill', '#1f2328'); full.setAttribute('font-size', '11');
+      full.textContent = nodes[j];
+      svg.appendChild(full);
+    }
+    // 中心
+    var ct = document.createElementNS(NS, 'text');
+    ct.setAttribute('class', 'center-label');
+    ct.setAttribute('x', cx); ct.setAttribute('y', cy + 5);
+    ct.setAttribute('text-anchor', 'middle');
+    ct.textContent = '锻造闭环';
+    svg.appendChild(ct);
+  })();
+</script>
+</body>
+</html>
