@@ -1,0 +1,53 @@
+
+▶ 运行 flagship-algo-forge (算法工具库) ... [PASS] 8/8 全绿
+   ✅ 矩阵乘法 matmul            | C=[[19,22],[43,50]] 精确命中
+   ✅ Softmax 数值稳定性          | 平移 1e6 最大差=0.00e+0
+   ✅ Softmax 归一 Σ=1         | Σ=1.000000000000000
+   ✅ LayerNorm μ≈0,σ²≈var/(var+ε) | μ=1.73e-17 σ²=0.9999862605 理论=0.9999862605
+   ✅ 注意力 Σw=1 + 因果          | Σw=1.000000000000 w[pos0→3]=0
+   ✅ Adam 收敛性               | loss 2.498→2.39e-14 (↓>$3数量级)
+   ✅ Xavier 方差              | 实测σ²=0.06670 目标=0.06667
+   ✅ 梯度检验 ∂L/∂logits        | maxRelErr=2.54e-10
+   结果：8/8 全绿
+
+▶ 运行 flagship-transformer (Transformer 参考实现+基准) ... [PASS] 9/9 全绿
+   ✅ matmul 梯度                  | maxRelErr=5.00e-13
+   ✅ rmsNorm 梯度                 | maxRelErr=4.44e-12
+   ✅ crossEntropy 梯度            | maxRelErr=8.43e-10
+   ✅ RoPE 梯度                    | maxRelErr=8.33e-12
+   ✅ 因果注意力 位置0不看未来              | out[0] 受V[3]扰动=0.00e+0
+   ✅ 注意力 输出有限 & 因果              | finite=true
+   ✅ Transformer 前向             | logits长度=16 finite=true
+   ✅ 基准 注意力碾压基线(归纳)             | TF loss=0.004/acc=1.00 | 基线 loss=2.295/acc=0.20
+   ✅ 可复现性(同种子)                  | ΔTF=0.00e+0
+   结果：9/9 全绿
+
+▶ 运行 flagship-rag-engine (推理引擎+RAG) ... [PASS] 9/9 全绿
+   ✅ 分词器 往返一致                 | "注意力 机制 计算 相关性" -> 一致
+   ✅ KV-Cache ≡ 全量重算          | 最大偏差=0.00e+0
+   ✅ greedy 解码一致              | cache=[17,10,0,12,0] full=[17,10,0,12,0]
+   ✅ top-p 保留质量≥p             | 保留=0.853 ≥ p=0.8
+   ✅ 采样可复现(同种子)               | [0,1,3,1,5] vs [0,1,3,1,5]
+   ✅ BM25 IDF 单调              | IDF(鸟)=1.204 > IDF(出现)=0.357
+   ✅ BM25 词频饱和                | +f: 0.018 → 0.007 (递减)
+   ✅ BM25 检索 Recall@1/MRR     | Recall@1=1.00 MRR=1.00
+   ✅ 端到端 RAG 管线               | 命中doc=1(期望1) 生成5token
+   结果：9/9 全绿
+
+▶ 运行 flagship-llm-chat (可对话迷你 LLM 服务) ... [PASS] 6/6 全绿
+   PASS 权重 save/load 往返        | 文件往返后推理 token 一致
+   PASS 对话链路连通                 | 生成 8 个合法 token（结构性连通测试，非答案质量）
+   PASS 停止符截断                  | 答:"加 ： 缩 是 什 么 答 ： 补 什 么 答 ： 正 看" 未泄漏下一轮问句
+   PASS BPE 权重往返               | BPE 文件往返后推理 token 一致
+   PASS BPE 对话连通               | 生成 1 个合法 token；BPE 词表=258 含 80 合并
+   PASS BPE 停止符截断              | 停止符'。'id=54 可识别；答:"复" 未越界
+   结果：6/6 全绿
+
+================ 旗舰闭环总战绩 ================
+[PASS] flagship-algo-forge      算法工具库                      8/8
+[PASS] flagship-transformer     Transformer 参考实现+基准        9/9
+[PASS] flagship-rag-engine      推理引擎+RAG                   9/9
+[PASS] flagship-llm-chat        可对话迷你 LLM 服务               6/6
+==============================================
+
+[PASS] 四件实物全部自检通过 · 闭环可复现 · 作者：晨星
