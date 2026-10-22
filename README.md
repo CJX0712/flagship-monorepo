@@ -21,7 +21,7 @@
 | 1 | [flagship-algo-forge](https://github.com/CJX0712/flagship-algo-forge) | **8/8** | 零依赖复用世界顶级基础算法（注意力/LayerNorm/AdamW/Xavier/Top-p），每条都是可被独立实现交叉验证的数学不变量 |
 | 2 | [flagship-transformer](https://github.com/CJX0712/flagship-transformer) | **9/9** | 从零搭的反向自动微分 + 十层架构 Transformer 参考实现；**RoPE** 位置编码；**归纳任务上注意力碾压无注意力基线**；诚实记录**长度外推短板**并用 **YaRN** 补洞 |
 | 3 | [flagship-rag-engine](https://github.com/CJX0712/flagship-rag-engine) | **9/9** | 工业级 **KV-Cache 增量解码引擎**（与全量重算**逐位等价**）+ **BM25 检索器** + 端到端 **RAG 管线** |
-| 4 | [flagship-llm-chat](https://github.com/CJX0712/flagship-llm-chat) | **12/12** | 可对话迷你 LLM 服务层：复用 KV-Cache/因果 LM，新增权重持久化 + 重复惩罚 + 句末符截断，把"能跑的引擎"变成"真能对话的系统" |
+| 4 | [flagship-llm-chat](https://github.com/CJX0712/flagship-llm-chat) | **6/6**（对话层；该仓库自身聚合 **15/15**） | 可对话迷你 LLM 服务层：复用 KV-Cache/因果 LM，新增权重持久化 + 重复惩罚 + 句末符截断 + **⑥ BPE 子词分词**（命中率 76%→100%、token 省 41%），把"能跑的引擎"变成"真能对话的系统" |
 
 ---
 
@@ -79,7 +79,7 @@ cd flagship-monorepo
 node verify.js
 ```
 
-预期输出：`🏆 四件实物全部自检通过 · 闭环可复现`（algo 8/8 + transformer 9/9 + rag 9/9 + chat 12/12 聚合，退出码 0）。
+预期输出：`🏆 四件实物全部自检通过 · 闭环可复现`（algo 8/8 + transformer 9/9 + rag 9/9 + chat 6/6 聚合 = **32/32**，退出码 0）。
 
 > 若不递归克隆，也可手动进入各子仓库目录运行其自检脚本。
 
